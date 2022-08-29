@@ -1,0 +1,18 @@
+<div class="card mb-5" style="width: 100%;" id="post-{{post.id}}">
+    <h5 class="card-header"><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></h5>
+    <div class="card-body">
+        <strong class="card-title" id="post-title-{{post.id}}">{{ post.title}}</strong>
+        <h6 class="card-text" id="post-content-{{post.id}}">{{ post.content}}</h6>
+        <p class="card-text">{{ post.date }}</p>
+        <p id="post-{{post.id}}-likes">likes: {{ post.likes.all|length }}</p>
+        {% if post in user_likes_post %}
+            <button class="btn btn-primary" id="like-btn-{{post.id}}" onclick="likePost('{{ post.id }}')">UnLike</button>
+        {% else %}
+            <button class="btn btn-primary" id="like-btn-{{post.id}}" onclick="likePost('{{ post.id }}')" >Like</button>
+        {% endif %}
+        
+        {% if user == post.user %}
+            <button class="btn btn-primary" onclick="editPost('{{ post.id }}')">edit</button>
+        {% endif %}
+    </div>
+</div>

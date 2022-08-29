@@ -1,0 +1,46 @@
+{% extends "network/layout.html" %}
+{% block body %}
+    <div id="profile">
+        
+        <div  class="container" id="profile-header">
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th colspan="2">{{profile_user.username}}</th>
+                    </tr>
+                    <tr>
+                        <th>Followers</th>
+                        <th>Following</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ profile_user.followers.all|length }}</td>
+                        <td>{{ profile_user.following.all|length }}</td>
+                    </tr>
+                    <tr>
+                        {% if user.is_authenticated and user != profile_user %}
+                            {% if is_followed %}
+                                <td colspan="2"><a class="btn btn-primary" href="{% url 'follow' profile_user.username %}">unfollow</a></td>
+                            {% else %}
+                                <td colspan="2"><a class="btn btn-primary" href="{% url 'follow' profile_user.username %}">Follow</a></td>
+                            {% endif%}
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="posts" class="container">
+            {% for post in page_object.object_list %}
+                {% include 'network/posts.html'%}
+            {% empty %}
+                    <p> No Post</p>
+            {% endfor %}
+        </div>
+
+    </div>
+    <div class="container">
+        {% include 'network/page_navigation.html' %}
+    </div>
+{% endblock %}

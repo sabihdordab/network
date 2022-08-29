@@ -1,0 +1,35 @@
+#create-post{
+    margin: 10px;
+    font-size: large;
+    border-color: lightgray;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    padding: 15px;
+}
+
+#profile{
+    padding: 20px;
+    margin: 20px;
+    border-color: lightgray;
+    border-style: solid;
+    border-radius: 2px;
+    border-width: 2px;
+}
+
+#profile-header{
+    font-size: large;
+    border-color: lightskyblue;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 2px;
+    margin-bottom: 30px;
+}
+
+td,th{
+    text-align: center;
+}
+
+.card{
+    margin-top: 5px;
+}

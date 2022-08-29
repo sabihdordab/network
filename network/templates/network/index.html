@@ -1,0 +1,33 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    {% if user.is_authenticated %}
+        <div  class = 'form-group' id = 'create-post' >
+            <strong>Create a New Post</strong>
+            <hr>
+            <form action="{% url 'create' %}" method="post">
+                {% csrf_token %}
+                <label>Title:</label>
+                <input class = 'form-control' type="text" name="post-title" id="post-title">
+                <br>
+                <label>Content:</label>
+                <textarea class = 'form-control' name="post-content" id="post-content"></textarea>
+                <br>
+                <input class="btn btn-primary" type="submit" value="Submit" id='submit'>
+            </form>
+        </div>
+    {% endif %}
+
+    <div id="posts" class="container">
+        {% for post in page_object.object_list %}
+            {% include 'network/posts.html'%}
+            {% empty %}
+                <p> No Post</p>
+        {% endfor %}
+    </div> 
+
+    <div class="container">
+        {% include 'network/page_navigation.html' %}
+    </div>
+{% endblock %}
