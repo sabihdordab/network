@@ -15,7 +15,6 @@ A Twitter-like social network website for making posts and following users.
 
 - HTML
 - CSS 
-- Sass
 - Bootstrap
 - Java script
 
