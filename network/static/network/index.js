@@ -24,6 +24,10 @@ function editPost(postId){
     let submitBTN = document.createElement('button');
     let br = document.createElement('br');
     let div = document.createElement('div');
+    const titleLBL = document.createElement('label');
+    const contentLBL = document.createElement('label');
+    titleLBL.innerHTML = "New Title :";
+    contentLBL.innerHTML = "New Content :";
 
     input.setAttribute("type", "text");
     textArea.className = 'form-control';
@@ -36,8 +40,11 @@ function editPost(postId){
     title.style.width = '100%';
     submitBTN.innerHTML = "Submit" ;
     submitBTN.className = 'btn btn-primary';
-    
+    div.className = 'container';
+
+    div.appendChild(titleLBL);
     div.appendChild(input);
+    div.appendChild(contentLBL);
     div.appendChild(textArea);
     div.appendChild(br);
     div.appendChild(submitBTN);
