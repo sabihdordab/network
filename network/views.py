@@ -8,6 +8,7 @@ import datetime
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -48,7 +49,7 @@ def login_view(request):
     else:
         return render(request, "network/login.html")
 
-
+@login_required(login_url="login")
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
@@ -89,6 +90,7 @@ def create_post(request):
         return HttpResponse(status=405)
 
 @csrf_exempt
+@login_required(login_url="login")
 def edit_post(request,id):
     if request.method == 'POST':
         post = Post.objects.get(id=id)
@@ -103,11 +105,9 @@ def edit_post(request,id):
 
 
 @csrf_exempt
+@login_required(login_url="login")
 def like_post(request,id):
     if request.method == 'POST':
-        if not request.user.is_authenticated:
-            return JsonResponse({'message':'failed'})
-
         post=Post.objects.get(id=id)
         is_liked = False
 
@@ -158,13 +158,10 @@ def user_profile(request,username):
             'profile_user' : user
         })
 
+@login_required(login_url="login")
 def follow_unfollow(request,username):
 
     user = request.user
-    if user.id is None :
-        return HttpResponse(status=405)
-
-    
     try:
         user_followed = User.objects.get(username=username)
     except:
@@ -183,15 +180,10 @@ def follow_unfollow(request,username):
 
     return HttpResponseRedirect(reverse("profile",args=(username,)))
     
-
+@login_required(login_url="login")
 def following(request): 
-    user = request.user 
-    if not user.is_authenticated:
-        return HttpResponse(status=405)
-
-    user = User.objects.get(id=user.id)
-    user_following = [following.user_followed for following in user.following.all()]
-    posts = Post.objects.filter(user__in=user_following).order_by('id').reverse()
+    user = request.user
+    posts = [following.get_user_followed_posts() for following in user.following.all()]
 
     #page control
     paginator = Paginator(posts, 10)
