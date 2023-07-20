@@ -1,30 +1,24 @@
-{% extends "network/layout.html" %}
-
-{% block body %}
-
-    <h2>Register</h2>
-
+{% extends 'network/layout.html'%}
+{% block title %}Register{%endblock%}
+{% block body%}
     {% if message %}
-        <div>{{ message }}</div>
+        <div class="alert alert-danger" role="alert">
+            {{ message }}
+        </div>
     {% endif %}
-
-    <form action="{% url 'register' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input class="form-control" autofocus type="text" name="username" placeholder="Username">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="email" name="email" placeholder="Email Address">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Register">
+    <form method="Post" action="{% url 'register'%}" enctype="multipart/form-data" class="authForm">
+        {% csrf_token%}
+        <label>Username:</label>
+        {{ form.username }}
+        <label>Email:</label>
+        {{ form.email }}
+        <label>Password:</label>
+        {{ form.password }}
+        <label>Confirm Password:</label>
+        {{ form.confirm }}
+        <br>
+        <input type="submit" class="btn btn-primary" value="register">
+        <br>
+        <p>Have an account?</p><a href="{% url 'login'%}">Login</a>
     </form>
-
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
-
-{% endblock %}
+{% endblock%}

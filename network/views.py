@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-
+from .forms import *
 
 def index(request):
     user = request.user
@@ -32,22 +32,29 @@ def index(request):
 
 def login_view(request):
     if request.method == "POST":
-
-        # Attempt to sign user in
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-
-        # Check if authentication successful
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
-        else:
-            return render(request, "network/login.html", {
-                "message": "Invalid username and/or password."
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            try:
+                user = User.objects.get(username=username,password=password)
+                login(request,user)
+                return HttpResponseRedirect(reverse('index'))
+            except:
+                pass
+            
+             
+        return render(request,'network/login.html',{
+                'form' : form,
+                'message' : "invalid username / password ?"
             })
-    else:
-        return render(request, "network/login.html")
+
+    else: #get method?
+        return render(request,'network/login.html',{
+            'form' : LoginForm
+        })
+
+
 
 @login_required(login_url="login")
 def logout_view(request):
@@ -57,29 +64,34 @@ def logout_view(request):
 
 def register(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
-
-        # Ensure password matches confirmation
-        password = request.POST["password"]
-        confirmation = request.POST["confirmation"]
-        if password != confirmation:
-            return render(request, "network/register.html", {
-                "message": "Passwords must match."
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['password'] == form.cleaned_data['confirm']:
+                try:
+                    user = form.save()
+                    login(request,user)
+                    return HttpResponseRedirect(reverse('index'))
+                except:
+                    return render(request,'network/register.html',{
+                        'form' : form,
+                        'message' : "idk!?"
+                    })
+            else: #password != confirm
+                return render(request, "network/register.html", {
+                "message": "Password and Confirm must match.",
+                "form" : form
             })
+        else: #not valid form
+            return render(request,'network/register.html',{
+                        'form' : form,
+                        'message' : "username already taken or invalid inputs"
+                    })
 
-        # Attempt to create new user
-        try:
-            user = User.objects.create_user(username, email, password)
-            user.save()
-        except IntegrityError:
-            return render(request, "network/register.html", {
-                "message": "Username already taken."
-            })
-        login(request, user)
-        return HttpResponseRedirect(reverse("index"))
-    else:
-        return render(request, "network/register.html")
+    else: #get method?
+        return render(request,'network/register.html',{
+            'form' : RegisterForm
+        })
+
 
 def create_post(request):
     if request.method == "POST":
