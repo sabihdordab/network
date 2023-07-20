@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from datetime import datetime
 
 class User(AbstractUser):
     pass
@@ -9,7 +8,7 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE , related_name='posts')
     title = models.TextField(blank=True)
     content = models.TextField(blank=False)
-    date = models.DateField(default=datetime.now())
+    date = models.DateField(auto_now_add=True)
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
@@ -24,3 +23,5 @@ class Following(models.Model):
     user_followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers" )
     def __str__(self):
         return f"{self.user} is following {self.user_followed}"
+    def get_user_followed_posts(self):
+        return self.followed_user.posts.order_by("-date").all()
