@@ -24,4 +24,4 @@ class Following(models.Model):
     def __str__(self):
         return f"{self.user} is following {self.user_followed}"
     def get_user_followed_posts(self):
-        return self.followed_user.posts.order_by("-date").all()
+        return self.user_followed.posts.order_by("-date").all()
