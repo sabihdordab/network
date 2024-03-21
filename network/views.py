@@ -193,19 +193,25 @@ def follow_unfollow(request,username):
     return HttpResponseRedirect(reverse("profile",args=(username,)))
     
 @login_required(login_url="login")
+
 def following(request): 
     user = request.user
-    posts = [following.get_user_followed_posts() for following in user.following.all()]
+    #posts = [following.get_user_followed_posts() for following in user.following.all()]
+    followed_users_posts = []
 
+    for following in user.following.all():
+        followed_user_posts = following.get_user_followed_posts()
+        followed_users_posts.extend(followed_user_posts)
     #page control
-    paginator = Paginator(posts, 10)
+    paginator = Paginator(followed_users_posts, 10)
     page_number = request.GET.get('page')
     page_object = paginator.get_page(page_number)
 
     return render(request, "network/index.html", {
         'page_object' : page_object,
-        'user_likes_post' : [ like.post for like in Like.objects.filter(user=user).all() ]
+        'user_likes_post' : followed_users_posts
     })
+    
 
     
 
